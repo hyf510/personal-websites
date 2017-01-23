@@ -1,0 +1,23 @@
+<footer class="container-fluid">
+    <nav class="navbar navbar-default navbar-fixed-bottom navbar-inverse">
+        <div class="container-fluid">
+            <div class="row text-center">
+                <p class="col-xs-4 col-md-4 col-sm-4 navbar-text" id="home">首页</p>
+                <p class="col-xs-4 col-md-4 col-sm-4 navbar-text" id="store">商城</p>
+                <p class="col-xs-4 col-md-4 col-sm-4 navbar-text" id="my_app">我的e家</p>
+            </div>
+        </div>
+    </nav>
+</footer>
+</body>
+<!-- 放置后置监控埋点 -->
+<script type="text/javascript" src="<@= ctx @>libs/require.js"></script>
+<script type="text/javascript" src="<@= ctx @>libs/require-config.js?v=<@= _build.ts @>"></script>
+<script type="text/javascript">
+    <@ if(data.main){ @>
+        require(["<@= data.main @>"]);
+    <@ }else{ @>
+        require(["C"]);
+    <@ } @>
+</script>
+</html>

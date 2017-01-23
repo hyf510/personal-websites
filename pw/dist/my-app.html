@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>我的e家-我的APP</title>
+    <meta name="format-detection" content="telephone=no,email=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="css/pw.css?v=20161114102830">
+    <script type="text/javascript">
+        var _ipos = {
+            ctx : "",
+            version:"1.0.0",
+            ts:"20161114102830"
+        };
+    </script>
+</head>
+
+<body style="background-color: #dddddd">
+<nav class="navbar navbar-default">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="navbar-header col-xs-4 col-md-4 col-sm-4">
+				<span id="nav" class="navbar-brand" style="padding: 15px 20px;background: url('../images/icon-left.png') no-repeat left;">我的e家</span>
+			</div>
+			<div class="col-xs-8 col-md-8 col-sm-8 nav-margin-top">
+				<input type="text" class="top-navbar" placeholder="Search">
+				<div class="btn btn-default">搜索</div>
+			</div>
+		</div>
+	</div>
+</nav>
+<div class="alert alert-danger text-center" role="alert" style="display: none" id="error"></div>
+<div class="alert alert-success text-center" role="alert" style="display: none" id="success"></div>
+
+
+<section>
+
+</section>
+<script type="text/template" id="loanding">
+    <section>
+        <div class="container-fluid">
+            <img src="images/my_home.png" style="width:120px;height:120px" id="home"/>
+            <img src="images/my_store.png" style="width:120px;height:120px;float:right" id="store"/>
+        </div>
+        <div class="container-fluid">
+            <img src="images/loanding.png" class="img-responsive center-block" id="loand"/>
+        </div>
+        <div class="container-fluid">
+            <img src="images/user_info.png"  style="width:120px;height:120px" id="user"/>
+            <img src="images/assets.png"  style="width:120px;height:120px;float:right" id="assets"/>
+        </div>
+    </section>
+</script>
+
+<script type="text/template" id="exit">
+    <section>
+        <div class="container-fluid">
+            <img src="images/myHome.png" style="width:120px;height:120px" id="has_home"/>
+            <img src="images/myStore.png" style="width:120px;height:120px;float:right" id="has_store"/>
+        </div>
+        <div class="container-fluid">
+            <img src="images/exit.png" class="img-responsive center-block" id="exit"/>
+        </div>
+        <div class="container-fluid">
+            <img src="images/userInfo.png" style="width:120px;height:120px" id="has_user"/>
+            <img src="images/property.png" style="width:120px;height:120px;float:right" id="has_assets"/>
+        </div>
+    </section>
+</script>
+
+<script type="text/template" id="login">
+    <section class="container-fluid">
+        <form class="form-horizontal" >
+            <div class="form-group">
+                <label for="inputEmail3" class="col-sm-2 control-label">账号</label>
+                <div class="col-sm-10">
+                    <input type="email" class="form-control"  placeholder="请输入账号" id="accound">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputPassword3" class="col-sm-2 control-label">密码</label>
+                <div class="col-sm-10">
+                    <input type="password" class="form-control"  placeholder="请输入密码" id="use_pw">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox"> 记住密码
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10 text-center">
+                    <div class="btn btn-default" id="vertify">确定</div>
+                    <div class="btn btn-default">取消</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <div class="checkbox">
+                        <div class="pull-right">
+                            <span>
+                                <a href="#">忘记密码？</a>
+                            </span>
+                            <span>
+                                <a href="#">立即注册>></a>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </section>
+</script>
+<footer class="container-fluid">
+    <nav class="navbar navbar-default navbar-fixed-bottom navbar-inverse">
+        <div class="container-fluid">
+            <div class="row text-center">
+                <p class="col-xs-4 col-md-4 col-sm-4 navbar-text" id="home">首页</p>
+                <p class="col-xs-4 col-md-4 col-sm-4 navbar-text" id="store">商城</p>
+                <p class="col-xs-4 col-md-4 col-sm-4 navbar-text" id="my_app">我的APP</p>
+            </div>
+        </div>
+    </nav>
+</footer>
+</body>
+<!-- 放置后置监控埋点 -->
+<script type="text/javascript" src="libs/require.js"></script>
+<script type="text/javascript" src="libs/require-config.js?v=20161114102830"></script>
+<script type="text/javascript">
+    
+        require(["js/my-app"]);
+    
+</script>
+</html>

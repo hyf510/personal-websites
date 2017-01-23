@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>我的e家-首页</title>
+    <meta name="format-detection" content="telephone=no,email=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="css/pw.css?v=20161114102830">
+    <script type="text/javascript">
+        var _ipos = {
+            ctx : "",
+            version:"1.0.0",
+            ts:"20161114102830"
+        };
+    </script>
+</head>
+
+<body>
+<nav class="navbar navbar-default">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="navbar-header col-xs-4 col-md-4 col-sm-4">
+				<span id="nav" class="navbar-brand" style="padding: 15px 20px;background: url('../images/icon-left.png') no-repeat left;">我的e家</span>
+			</div>
+			<div class="col-xs-8 col-md-8 col-sm-8 nav-margin-top">
+				<input type="text" class="top-navbar" placeholder="Search">
+				<div class="btn btn-default">搜索</div>
+			</div>
+		</div>
+	</div>
+</nav>
+<div class="alert alert-danger text-center" role="alert" style="display: none" id="error"></div>
+<div class="alert alert-success text-center" role="alert" style="display: none" id="success"></div>
+
+
+<section>
+    <!-- 我的主页模板 -->
+    <script type="text/template" id="self-module">
+        <div class="media" style="border-bottom:1px solid #ddd;padding:0px 10px 10px 0px;">
+            <div class="media-left text-center">
+                <img class="media-object" src="images/touxiang.jpg" style="width:64px;height:64px;" id="user-logo">
+                <span id="user-name">黄燕锋</span>
+            </div>
+            <div class="media-body">
+                <h4 class="media-heading" id="title">Media heading</h4>
+                <span id="headline">测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据</span>
+            </div>
+            <div class="row" style="margin-top: 10px;">
+                <div class="col-xs-6 col-md-6 col-sm-6 text-left" style="margin-top:10px;">
+                    <span style="margin-left: 10px;" id="release-time">2016/08/11</span>
+                </div>
+                <div class="col-xs-6 col-md-6 col-sm-6 text-right">
+                    <div class="btn-group btn-group-right" role="group">
+                        <button type="button" class="btn btn-default btn-primary" id="release">发布</button>
+                        <button type="button" class="btn btn-default btn-warning" id="edit">编辑</button>
+                        <button type="button" class="btn btn-default btn-danger" id="omit">删除</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+    <!-- 主页模板 -->
+    <script type="text/template" id="look-module">
+        <div class="media" style="border-bottom:1px solid #ddd;padding:0px 10px 10px 0px;">
+            <div class="media-left text-center">
+                <a href="#">
+                    <img class="media-object" src="images/touxiang.jpg" alt="..." style="width:64px;height:64px;">
+                </a>
+                <span>黄燕锋</span>
+            </div>
+            <div class="media-body">
+                <h4 class="media-heading">Media heading</h4>
+                <span>测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据</span>
+            </div>
+            <div class="row" style="margin-top: 10px;">
+                <div class="col-xs-6 col-md-6 col-sm-6 text-left" style="margin-top:10px;">
+                <span style="margin-left:10px;">
+                    2016/08/11
+                </span>
+                </div>
+                <div class="col-xs-6 col-md-6 col-sm-6 text-right">
+                    <div class="btn-group btn-group-right" role="group">
+                        <button type="button" class="btn btn-default btn-primary">查看全文</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+</section>
+<footer class="container-fluid">
+    <nav class="navbar navbar-default navbar-fixed-bottom navbar-inverse">
+        <div class="container-fluid">
+            <div class="row text-center">
+                <p class="col-xs-4 col-md-4 col-sm-4 navbar-text" id="home">首页</p>
+                <p class="col-xs-4 col-md-4 col-sm-4 navbar-text" id="store">商城</p>
+                <p class="col-xs-4 col-md-4 col-sm-4 navbar-text" id="my_app">我的APP</p>
+            </div>
+        </div>
+    </nav>
+</footer>
+</body>
+<!-- 放置后置监控埋点 -->
+<script type="text/javascript" src="libs/require.js"></script>
+<script type="text/javascript" src="libs/require-config.js?v=20161114102830"></script>
+<script type="text/javascript">
+    
+        require(["js/index"]);
+    
+</script>
+</html>

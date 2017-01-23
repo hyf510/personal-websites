@@ -1,0 +1,58 @@
+<@- include('include/_header.ejs', {data:{title:"我的e家-首页"}}); @>
+<body>
+<@- include('include/_navbar.ejs', {data:{title:''}}); @>
+<section>
+    <!-- 我的主页模板 -->
+    <script type="text/template" id="self-module">
+        <div class="media" style="border-bottom:1px solid #ddd;padding:0px 10px 10px 0px;">
+            <div class="media-left text-center">
+                <img class="media-object" src="images/touxiang.jpg" style="width:64px;height:64px;" id="user-logo">
+                <span id="user-name">黄燕锋</span>
+            </div>
+            <div class="media-body">
+                <h4 class="media-heading" id="title">Media heading</h4>
+                <span id="headline">测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据</span>
+            </div>
+            <div class="row" style="margin-top: 10px;">
+                <div class="col-xs-6 col-md-6 col-sm-6 text-left" style="margin-top:10px;">
+                    <span style="margin-left: 10px;" id="release-time">2016/08/11</span>
+                </div>
+                <div class="col-xs-6 col-md-6 col-sm-6 text-right">
+                    <div class="btn-group btn-group-right" role="group">
+                        <button type="button" class="btn btn-default btn-primary" id="release">发布</button>
+                        <button type="button" class="btn btn-default btn-warning" id="edit">编辑</button>
+                        <button type="button" class="btn btn-default btn-danger" id="omit">删除</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+    <!-- 主页模板 -->
+    <script type="text/template" id="look-module">
+        <div class="media" style="border-bottom:1px solid #ddd;padding:0px 10px 10px 0px;">
+            <div class="media-left text-center">
+                <a href="#">
+                    <img class="media-object" src="images/touxiang.jpg" alt="..." style="width:64px;height:64px;">
+                </a>
+                <span>黄燕锋</span>
+            </div>
+            <div class="media-body">
+                <h4 class="media-heading">Media heading</h4>
+                <span>测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据测试数据</span>
+            </div>
+            <div class="row" style="margin-top: 10px;">
+                <div class="col-xs-6 col-md-6 col-sm-6 text-left" style="margin-top:10px;">
+                <span style="margin-left:10px;">
+                    2016/08/11
+                </span>
+                </div>
+                <div class="col-xs-6 col-md-6 col-sm-6 text-right">
+                    <div class="btn-group btn-group-right" role="group">
+                        <button type="button" class="btn btn-default btn-primary">查看全文</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+</section>
+<@- include('include/_footer.ejs',{data:{main:"js/index"}}); @>

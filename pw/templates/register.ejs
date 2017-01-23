@@ -1,0 +1,23 @@
+<@- include('include/_header.ejs', {data:{title:"我的e家-注册"}}); @>
+<body>
+<@- include('include/_navbar.ejs', {data:{title:''}}); @>
+<section class="container-fluid">
+        <ul class="list-group" id="register-info">
+            <li class="list-group-item">
+                <input type="text" placeholder="请输入您的真实姓名" class="pull-right text-right" style="border:0;" id="user-name"/>
+                账号
+            </li>
+            <li class="list-group-item">
+                <input type="text" placeholder="请输入密码" class="pull-right text-right" style="border:0;" id="password"/>
+                密码
+            </li>
+            <li class="list-group-item">
+                <input type="text" placeholder="请再次输入密码" class="pull-right text-right" style="border:0;" id="password2"/>
+                确认密码
+            </li>
+        </ul>
+        <div style="margin-bottom:10rem;" id="register-submit">
+            <div class="btn btn-danger btn-block btn-lg">注册</div>
+        </div>
+</section>
+<@- include('include/_footer.ejs',{data:{main:"js/register"}}); @>

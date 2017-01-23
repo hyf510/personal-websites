@@ -1,0 +1,53 @@
+<@- include('include/_header.ejs', {data:{title:"我的e家-基本信息"}}); @>
+<body>
+<@- include('include/_navbar.ejs', {data:{title:''}}); @>
+<section class="container-fluid">
+    <script type="text/template" id="base_info">
+        <div>
+            <div>
+                <img src="<%= portrait %>"  class="img-thumbnail" style="width:230px;height:230px;" id="imgPre">
+            </div>
+        </div>
+        <div style="margin:1rem 0">
+            <input accept="image/*" type="file" id="change-images" style="position:absolute;width:70px;height:50px;opacity: 0">
+            <div class="btn btn-primary  btn-sm" id="updata-img">更换头像</div>
+            <div class="btn btn-primary  btn-sm" id="btn-pw">修改密码</div>
+        </div>
+        <ul class="list-group" id="base">
+            <li class="list-group-item">
+                <span class="badge"><%= userName %></span>
+                <input type="text" value="<%= userName %>" class="pull-right text-right" style="border:0;display: none"/>
+                姓名
+            </li>
+            <li class="list-group-item">
+                <span class="badge"><%= gender %></span>
+                <input type="text" value="<%= gender %>" class="pull-right text-right" style="border:0;display: none"/>
+                性别
+            </li>
+            <li class="list-group-item">
+                <span class="badge"><%= birthday %></span>
+                <input type="text" value="<%= birthday %>" class="pull-right text-right" style="border:0;display: none"/>
+                出生日期
+            </li>
+            <li class="list-group-item">
+                <span class="badge"><%= tel %></span>
+                <input type="text" value="<%= tel %>" class="pull-right text-right" style="border:0;display: none"/>
+                电话号码
+            </li>
+            <li class="list-group-item">
+                <span class="badge"><%= qq %></span>
+                <input type="text" value="<%= qq %>" class="pull-right text-right" style="border:0;display: none"/>
+                QQ/微信
+            </li>
+            <li class="list-group-item">
+                <span class="badge"><%= email %></span>
+                <input type="text" value="<%= email %>" class="pull-right text-right" style="border:0;display: none"/>
+                邮箱地址
+            </li>
+        </ul>
+        <div style="display:none;margin-bottom:10rem;" id="submit-update">
+            <div class="btn btn-danger btn-block btn-lg">确认修改信息</div>
+        </div>
+    </script>
+</section>
+<@- include('include/_footer.ejs',{data:{main:"js/my-info"}}); @>

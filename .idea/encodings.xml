@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/pw/templates/include/_footer.ejs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pw/templates/include/_navbar.ejs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pw/templates/index.ejs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pw/templates/my-app.ejs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pw/templates/my-info.ejs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pw/templates/register.ejs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pw/templates/store.ejs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pw/templates/update-password.ejs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pw/www/data/loand.json" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pw/www/js/common/app.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pw/www/js/common/constant.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pw/www/js/common/native.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pw/www/js/common/utils.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pw/www/js/common/view.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pw/www/js/control.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pw/www/js/index.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pw/www/js/my-app.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pw/www/js/my-info.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pw/www/js/register.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pw/www/js/update-password.js" charset="UTF-8" />
+  </component>
+</project>

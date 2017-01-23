@@ -1,0 +1,12 @@
+{
+  "flag":"1",
+  "data":{
+    "hasLogin":"01",
+    "baseInfo":{
+      "userName":"",
+      "userId":"",
+      "tel":""
+    }
+  },
+  "msg":"已注册"
+}
