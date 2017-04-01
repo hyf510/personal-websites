@@ -31,6 +31,8 @@ define([
         UPDATE_INFO:prefix + 'test_suc.json'
 
     } : {
+        //天眼系统配置
+        EYESKY: '/hyf/eyeObserver/submit.do',
         //例如： 登录接口PLUGIN_LOGIN: 'gs/user1/login/login.do'
         LOAND: '/eHome/user/login.do',
         UPDATE_PW:'/eHome/userInfo/updatePassword.do',

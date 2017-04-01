@@ -5,6 +5,8 @@
  */
 define([
     'jquery',
+    // 天眼系统
+    'js/common/eyeSky',
     // 基础库 不依赖其他模块
     'js/common/env',
     'js/common/utils',
@@ -14,6 +16,7 @@ define([
     'js/common/ui',
     'js/common/native'
 ], function ($,
+             Observer,
              Env,
              Utils,
              App,
@@ -39,7 +42,9 @@ define([
         // Native类api(native.js)
         Native:Native,
         // 路径配置(app.js)
-        APP:App
+        APP:App,
+        //天眼监控
+        Observer:Observer
     };
 
     return C;

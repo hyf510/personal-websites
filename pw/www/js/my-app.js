@@ -18,6 +18,7 @@ define([ 'jquery','C','js/control','js/common/view','underscore'], function ($,C
         initialize:function(){
             var $this = this;
             C.Utils.data('base_info') ? $this.$el.html($this.Etemplate) :  $this.$el.html($this.Ltemplate);
+            localStorage.removeItem('webCollector');
         },
         render:function(){},
         events:{
