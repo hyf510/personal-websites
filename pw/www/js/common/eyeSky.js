@@ -4,6 +4,7 @@
  */
 define(['C','js/common/buried', 'jquery'], function (C,bpo,$) {
 
+    console.log('启动天眼监测系统......');
     /*
      * @class 收集器控制开关
      * @value true
@@ -59,7 +60,7 @@ define(['C','js/common/buried', 'jquery'], function (C,bpo,$) {
     * @module 数据上报
     * */
     var httpRequest = function(){
-        console.log("————TODO:进入数据上传！————");
+        console.log("————进入数据上传！————");
         var handler,xml,
             pathUrl = 'http://localhost:8099/hyf/eyeObserver/submit.do',//配置数据上报接口
             dataSet = localStorage.getItem('webCollector');//获取本地存储数据
@@ -74,6 +75,7 @@ define(['C','js/common/buried', 'jquery'], function (C,bpo,$) {
                 success:function(res){
                     if(res && res.flag == '1'){
                         //数据提交后清除本地缓存
+                        console.log('-----数据上传完成！');
                         localStorage.removeItem('webCollector');
                     }
                 },
