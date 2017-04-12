@@ -2,7 +2,7 @@
  * Created by huangyanfeng on 2017/2/13.
  * description：天眼系统
  */
-define(['C','js/common/buried', 'jquery'], function (C,bpo,$) {
+define(['C','js/common/buried', 'zepto'], function (C,bpo,$) {
 
     console.log('启动天眼监测系统......');
     /*
@@ -19,9 +19,9 @@ define(['C','js/common/buried', 'jquery'], function (C,bpo,$) {
     };
 
     /*
-    * @module 程序入口
-    * @class 创建数据
-    * */
+     * @module 程序入口
+     * @class 创建数据
+     * */
     (function(){
         var dataSet = {},
             pathName = window.location.pathname.split('/')[1].split('.')[0] + '_' + new Date().getTime();
@@ -57,20 +57,25 @@ define(['C','js/common/buried', 'jquery'], function (C,bpo,$) {
     };
 
     /*
-    * @module 数据上报
-    * */
+     * @module 数据上报
+     * */
     var httpRequest = function(){
         console.log("————进入数据上传！————");
         var handler,xml,
             pathUrl = 'http://localhost:8099/hyf/eyeObserver/submit.do',//配置数据上报接口
             dataSet = localStorage.getItem('webCollector');//获取本地存储数据
+        console.log(dataSet);
         if($){
             $.ajax({
                 url:pathUrl,
                 type:'post',
-                data:dataSet,
+                data:{
+                    accountId : 'A10001',
+                    parseData : dataSet,
+                    timeNode : new Date().getTime()
+                },
                 header:{
-                    "Origin":"http://localhost:8089"
+                    "Origin":"http://localhost:8877"
                 },
                 success:function(res){
                     if(res && res.flag == '1'){
@@ -104,8 +109,8 @@ define(['C','js/common/buried', 'jquery'], function (C,bpo,$) {
     };
 
     /*
-    * @module 重写XMLHttpRequest
-    * */
+     * @module 重写XMLHttpRequest
+     * */
     if(control.XMLInterface){
         (function(){
             function ajaxEventTrigger(event) {
@@ -180,15 +185,15 @@ define(['C','js/common/buried', 'jquery'], function (C,bpo,$) {
         register:function(){
             window.onerror = function(msg,url,line,column){
                 //上报数据
-               console.log(msg);
+                console.log(msg);
             }
         },
 
         /*
-        * @module 接口监听 TODO 待开发
-        * @class XMLInterface XMLHttpRequest请求
-        * @class JQInterface $.ajax请求
-        * */
+         * @module 接口监听 TODO 待开发
+         * @class XMLInterface XMLHttpRequest请求
+         * @class JQInterface $.ajax请求
+         * */
         XMLInterface: function(){
             console.log('......执行XMLHttpRequest接口监听......');
 
@@ -267,6 +272,6 @@ define(['C','js/common/buried', 'jquery'], function (C,bpo,$) {
 });
 
 /*
-* 问题
-* 1：当埋点种植关闭时，js执行报错（not function）
-* */
+ * 问题
+ * 1：当埋点种植关闭时，js执行报错（not function）
+ * */
