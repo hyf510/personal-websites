@@ -1,253 +1,300 @@
 /**
- * Created by huangyanfeng on 2017/2/13.
+ * Created by huangyanfeng on 2017/4/19.
  * description：天眼系统
  */
-define(['C','js/common/buried', 'zepto'], function (C,bpo,$) {
-
-    console.log('启动天眼监测系统......');
-    /*
-     * @class 收集器控制开关
-     * @value true
-     * @value false
-     * */
-    var control = {
-        Monitor: true, //用户轨迹
-        buriedPoint: false, //埋点种植
-        register: false, //JS异常监听
-        XMLInterface: false, //XML接口监听
-        JQInterface: true //JQ接口监听
-    };
+define(['zepto'], function ($) {
 
     /*
-     * @module 程序入口
-     * @class 创建数据
+     * @class 系统自定义配置
+     * @FIELD 缓存字段 需要项目登录后配置USER_IDENTITY_ID为本地存储，用以获取客户ID
+     * @APP APP版本号 产品编码 每次更新增量包时需手动设置为最新版本号以及产品编码
+     * @FLAG 接口成功标识符
+     * @FUN 功能模块简称，用以辅助记录数据内容
+     * @SWITCHSTATE 默认开关配置，系统登录后从本地缓存获取数据后更新
      * */
-    (function(){
-        var dataSet = {},
-            pathName = window.location.pathname.split('/')[1].split('.')[0] + '_' + new Date().getTime();
-        if(localStorage.getItem('webCollector')){
-            dataSet = JSON.parse(localStorage.getItem('webCollector'));
-        }
-        dataSet[pathName] = {};
-        localStorage.setItem('webCollector',JSON.stringify(dataSet));
-    })();
-
-    /*
-     * @module 数据处理
-     * */
-    var dataStore = function(pathName,type,data){
-        var dataSet = {},
-            nameArr = [],
-            pageArr = [];
-        if (localStorage.getItem('webCollector')) {
-            dataSet = JSON.parse(localStorage.getItem('webCollector'));
-        }
-        for (var name in dataSet) {
-            nameArr.push(name);
-            pageArr.push(name.split('_')[0]);
-        }
-        if(pageArr.indexOf(pathName) != -1){
-            if(dataSet[nameArr[pageArr.lastIndexOf(pathName)]][type]){
-                dataSet[nameArr[pageArr.lastIndexOf(pathName)]][type].push(data);
-            }else{
-                dataSet[nameArr[pageArr.lastIndexOf(pathName)]][type] = [data];
+    var config = {
+        PATH: {
+            SWITCHURL: 'http://localhost:8099/gathering/getSwitch.do',
+            REPORTURL: 'http://localhost:8099/gathering/submit.do'
+        },
+        FIELD: {
+            SWITCH: 'SWITCH_STATE_DATA',
+            TAGVALUE: 'SWITCH_STATE_TAGVALUE',
+            DURATION: 'SWITCH_OFF_DURATION',
+            TRAJECTORY: 'TRAJECTORY_COLLECTION_DATA',
+            USERID:'USER_IDENTITY_ID'
+        },
+        APP: {
+            UPCCODE:'021',
+            VERSION: '5.5.0'
+        },
+        FLAG: {
+            SUCCESS: '1'
+        },
+        FUN: {
+            INTERFACE: 'ie',
+            MONITOR: 'ee'
+        },
+        SWITCHSTATE: {
+            switch: 'Y',
+            isAll: 'Y',
+            critical: '3',
+            config: {
+                interface: 'Y',
+                monitor: 'Y',
+                buriedPoint: 'N',
+                register: 'N'
             }
         }
-        localStorage.setItem('webCollector', JSON.stringify(dataSet));
     };
 
+    /******************************* 数据处理模块 ******************************/
+
     /*
-     * @module 数据上报
+     * @createStore 创建页面
+     * @createContainer 创建缓存
+     * @addData 记录数据
+     * @getDevice 获取设备信息
      * */
-    var httpRequest = function(){
-        console.log("————进入数据上传！————");
-        var handler,xml,
-            pathUrl = 'http://localhost:8099/hyf/eyeObserver/submit.do',//配置数据上报接口
-            dataSet = localStorage.getItem('webCollector');//获取本地存储数据
-        console.log(dataSet);
-        if($){
+    var createStore = function () {
+        return {
+            pageUrl: window.location.pathname.split('/')[1],//页面地址
+            timeAxis: new Date().getTime(),//时间节点
+            interFace: [],//接口
+            eventType: [],//操作轨迹
+            errorFlag: 'N'//默认值为N
+        }
+    };
+
+    var createContainer = function () {
+        var container = {},
+          localData = localStorage.getItem(config.FIELD.TRAJECTORY);
+        if (localData) {
+            container = JSON.parse(localData);
+            if (container.dataSet.length >= parseInt(config.SWITCHSTATE.critical)) {
+                if (config.SWITCHSTATE.isAll == 'Y') {
+                    //如配置开关为“上传所有”则触发数据上报
+                    submitData();
+                } else {
+                    //移除本地缓存数据，重新构建缓存
+                    localStorage.removeItem(config.FIELD.TRAJECTORY);
+                    arguments.callee();
+                    return;
+                }
+            }
+        } else {
+            container.dataSet = [];
+        }
+        container.dataSet.push(createStore());
+        localStorage.setItem(config.FIELD.TRAJECTORY, JSON.stringify(container));
+    };
+
+    var addData = function (type, data) {
+        var pathName = window.location.pathname.split('/')[1],//获取当前页面地址
+          localData = JSON.parse(localStorage.getItem(config.FIELD.TRAJECTORY));//获取本地存储数据
+        if(!localData){
+            return;
+        }
+        if (pathName != localData.dataSet[localData.dataSet.length - 1].pageUrl) {
+            //如检测到前页面地址与最后一次记录的地址不一致，则重新建一个页面的缓存
+            localData.dataSet.push(createStore());
+        }
+        switch (type) {
+            case config.FUN.INTERFACE:
+                localData.dataSet[localData.dataSet.length - 1].interFace.push(data);
+                break;
+            case config.FUN.MONITOR:
+                localData.dataSet[localData.dataSet.length - 1].eventType.push(data);
+                break;
+        }
+        localStorage.setItem(config.FIELD.TRAJECTORY, JSON.stringify(localData));
+    };
+
+    var getDevice = function () {
+        var userAgent = navigator.userAgent;
+        return {
+            app: (function () {
+                if (userAgent.indexOf('Android') > -1 || userAgent.indexOf('Adr') > -1) {
+                    return 'Android'
+                } else if (!!userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)) {
+                    return 'IOS'
+                }
+            })(),
+            version: navigator.appVersion
+        };
+    };
+
+    /******************************* 请求开关配置 数据上传模块 ******************************/
+
+    /*
+     * @updateSwitch 获取、更新开关配置
+     * @submitData 数据上传
+     * */
+    var updateSwitch = function (prCode) {
+        console.log('-----start 开始获取配置信息！-----');
+        $.ajax({
+            url: config.PATH.SWITCHURL,
+            type: 'get',
+            data: {
+                prCode: prCode
+            },
+            header: {
+                "Origin": "http://localhost:8877"
+            },
+            success: function (res) {
+                if (res && res.flag == '1') {
+                    console.log('-----end 配置信息获取结束！------');
+                    //存储标记值
+                    localStorage.setItem(config.FIELD.TAGVALUE,res.data.tagValue);
+                    //存储时长
+                    localStorage.setItem(config.FIELD.DURATION,res.data.duration);
+                    //更新本地存储开关配置信息
+                    localStorage.setItem(config.FIELD.SWITCH,JSON.stringify(res.data));
+                    console.log('-----重新启动系统！------');
+                    //启动插件
+                    startUp();
+                }
+            }
+        });
+    };
+
+    var submitData = function () {
+        console.log('-----start 开始数据上传-----');
+        var handler, xml,
+          tagValue = localStorage.getItem(config.FIELD.TAGVALUE),
+          paramer = {
+              prCode: config.APP.UPCCODE,//产品编码
+              version: config.APP.VERSION,//APP版本号
+              accountId: localStorage.getItem(config.FIELD.USERID) ? localStorage.getItem(config.FIELD.USERID) : 'TEST001',//用户ID
+              timeAxis: new Date().getTime(),//上传时间点
+              dataSet: JSON.parse(localStorage.getItem(config.FIELD.TRAJECTORY)),//数据集
+              deviceInfo: getDevice()//设备相关信息
+          };
+        if ($) {
             $.ajax({
-                url:pathUrl,
-                type:'post',
-                data:{
-                    accountId : 'A10001',
-                    parseData : dataSet,
-                    timeNode : new Date().getTime()
+                url: config.PATH.REPORTURL,
+                type: 'post',
+                data: paramer,
+                header: {
+                    "Origin": "http://localhost:8877"
                 },
-                header:{
-                    "Origin":"http://localhost:8877"
-                },
-                success:function(res){
-                    if(res && res.flag == '1'){
-                        //数据提交后清除本地缓存
-                        console.log('-----数据上传完成！');
-                        localStorage.removeItem('webCollector');
+                success: function (res) {
+                    if (res && res.flag == '1') {
+                        //数据提交后清除本地缓存数据
+                        console.log('-----end 数据上传结束！-----');
+                        localStorage.removeItem(config.FIELD.TRAJECTORY);
+                        //是否需要更新开关配置
+                        if(!tagValue || res.data.tagValue != tagValue){
+                            console.log('----- start 开关配置信息发生变更，重新请求配置信息！-----');
+                            //调用更新开关配置接口
+                            updateSwitch(res.data.prCode);
+                        } else {
+                            console.log('----- 开关配置信息未发生变更，重新构建缓存！-----');
+                            //重新构建本地缓存
+                            createContainer();
+                        }
                     }
                 },
-                error:function(){
+                error: function () {
                     //10秒后重新发起请求
                     handler && clearTimeout(handler);
                     handler = setTimeout(function () {
-                        httpRequest();
+                        arguments.callee();
                     }, 10000);
                 }
             });
-        }else{
-            if(window.XMLHttpRequest){
+        } else {
+            if (window.XMLHttpRequest) {
                 xml = new XMLHttpRequest();
-            }else if (window.ActiveXObject){
+            } else if (window.ActiveXObject) {
                 xml = new ActiveXObject("Microsoft.XMLHTTP");
             }
-            xml.onreadystatechange = function(){
-                if(xml.readyState == 4 && xml.status == 200){
+            xml.onreadystatechange = function () {
+                if (xml.readyState == 4 && xml.status == 200) {
                     console.log('数据提交成功！');
                 }
             };
-            xml.open('post',pathUrl);
-            xml.send(dataSet);
+            xml.open('post', pathUrl);
+            xml.send(paramer);
         }
     };
 
-    /*
-     * @module 重写XMLHttpRequest
-     * */
-    if(control.XMLInterface){
-        (function(){
-            function ajaxEventTrigger(event) {
-                var ajaxEvent = new CustomEvent(event, { detail: this });
-                window.dispatchEvent(ajaxEvent);
-            }
-            var oldXHR = window.XMLHttpRequest;
-            function newXHR() {
-                var realXHR = new oldXHR();
-                realXHR.addEventListener('abort', function () { ajaxEventTrigger.call(this, 'ajaxAbort'); }, false);
-                realXHR.addEventListener('error', function () { ajaxEventTrigger.call(this, 'ajaxError'); }, false);
-                realXHR.addEventListener('load', function () { ajaxEventTrigger.call(this, 'ajaxLoad'); }, false);
-                realXHR.addEventListener('loadstart', function () { ajaxEventTrigger.call(this, 'ajaxLoadStart'); }, false);
-                realXHR.addEventListener('progress', function () { ajaxEventTrigger.call(this, 'ajaxProgress'); }, false);
-                realXHR.addEventListener('timeout', function () { ajaxEventTrigger.call(this, 'ajaxTimeout'); }, false);
-                realXHR.addEventListener('loadend', function () { ajaxEventTrigger.call(this, 'ajaxLoadEnd'); }, false);
-                realXHR.addEventListener('readystatechange', function() { ajaxEventTrigger.call(this, 'ajaxReadyStateChange'); }, false);
-                return realXHR;
-            }
-            window.XMLHttpRequest = newXHR;
-        })();
-    }
+    /******************************* 主体模块 ******************************/
 
     var main = {
         /*
          * @module 注册点击事件监听器
-         * @params eventType 定义页面需要监听的事件类型
-         * @params dataSet 数据集
-         * @params pathName 页面路径
-         * @params nodeInfo 事件节点信息
-         * @params Elm 事件源
-         * @params Text 事件源文本
+         * @params type 定义页面需要监听的事件类型
+         * @params target 事件源
+         * @params sign 元素ID Class
+         * @params context 事件源文本
+         * @params timeAxis 时间戳
          * */
-        Monitor: function () {
-            var eventType = ['tap'];
-            for (var i = 0; i < eventType.length; i++) {
-                window.addEventListener(eventType[i], function (Event) {
-                    var pathName = window.location.pathname.split('/')[1].split('.')[0],
-                        nodeInfo = {
-                            timeNode: new Date(),
-                            Elm: Event.target.tagName || Event.target.nodeName,//获取元素名称
-                            id: Event.target.id,//获取id标识符
-                            className: Event.target.className,//获取class类名
-                            nodeType: Event.target.nodeType,//元素节点类型
-                            Text: Event.target.innerText || Event.target.textContent//获取文本内容
-                        };
-                    dataStore(pathName,'Tap',nodeInfo);
-                });
-            }
+        monitor: function () {
+            console.log('----启动操作轨迹收集器----');
+            window.addEventListener('tap', function (Event) {
+                Event.stopPropagation();
+                var DATA = {
+                    'type': 'tap',
+                    'target': Event.target.tagName || Event.target.nodeName,
+                    'sign': {
+                        'id': String(Event.target.id).trim(),
+                        'class': String(Event.target.className).trim()
+                    },
+                    'context': String(Event.target.innerText).trim() || String(Event.target.textContent).trim(),
+                    'timeAxis': new Date().getTime()
+                };
+                console.log(arguments);
+                addData(config.FUN.MONITOR, DATA);
+            });
         },
 
         /*
-         * @module 埋点插入
-         * @params point 埋点对象
+         * @module 埋点 TODO 待开发
          * */
-        buriedPoint: (function (point) {
-            var pathName = window.location.pathname.split('/')[1].split('.')[0];
-            if (pathName in point) {
-                var i = 0;
-                return function () {
-                    var current = point[pathName][i];
-                    dataStore(pathName,'EDO',current);
-                    i = i + 1;
-                    return current;
-                }
-            }
-        })(bpo),
+        buriedPoint: (function () {
+            console.log('----启动埋点收集器----');
+        }),
 
         /*
          * @module JS异常监听  TODO 待开发
          * */
-        register:function(){
-            window.onerror = function(msg,url,line,column){
-                //上报数据
-                console.log(msg);
-            }
+        register: function () {
+            console.log('----启动JS异常收集器----');
         },
 
         /*
-         * @module 接口监听 TODO 待开发
-         * @class XMLInterface XMLHttpRequest请求
-         * @class JQInterface $.ajax请求
+         * @module 接口监听
+         * @class interface $.ajax请求
          * */
-        XMLInterface: function(){
-            console.log('......执行XMLHttpRequest接口监听......');
-
-            window.addEventListener('ajaxReadyStateChange', function (e) {
-                console.log(e.detail); // 监控flag异常
-            });
-            window.addEventListener('ajaxError', function (e) {
-                console.log(e.detail); // 监控请求错误
-            });
-            window.addEventListener('ajaxTimeout', function (e) {
-                console.log(e.detail); // 监控请求超时
-            });
-        },
-
-        JQInterface: function(){
-            var pathName = window.location.pathname.split('/')[1].split('.')[0],
-                customFlag = ['1', '2'],//定义接口异常标识符
-                threshold = 3,//设定阀值
-                count = 0,//起始基数
-                ajaxBack = $.ajax,
-                DATA = {};
-            $.ajax = function(setting){
-                var suc = setting.success;//克隆success副本
-                setting.success = function(){
-                    if($.isFunction(suc)){
-                        //接口返回参数
-                        DATA.SS = {
-                            data: arguments[0],
-                            readyState: arguments[2].readyState,
-                            status: arguments[2].status,
-                            responseURL: arguments[2].responseURL
-                        };
+        interface: function () {
+            console.log('----启动接口收集器----');
+            var ajaxBack = $.ajax,
+              DATA = {};
+            $.ajax = function (setting) {
+                var start, end,
+                  suc = setting.success;//克隆success副本
+                setting.beforeSend = function () {
+                    start = new Date().getSeconds();
+                };
+                setting.success = function () {
+                    end = new Date().getSeconds();
+                    if ($.isFunction(suc)) {
+                        DATA.address = setting.url;
                         //接口H5入参
-                        DATA.H5 = {
-                            data: setting.data ? setting.data : {},
-                            type: setting.type,
-                            url: setting.url
+                        DATA.frontLog = {
+                            data: setting.data ? setting.data : '',
+                            type: setting.type
                         };
-                        DATA.timeNode = new Date();
-                        dataStore(pathName,'INTERFACE',DATA);
-                        //处理各种异常情况
-                        switch (arguments[0].flag) {
-                            case customFlag[0]:
-                                //接口返回正常 但可能由于开关等引起短暂阻塞性问题（达到设定警戒条件立即触发上报数据，否则只执行记录数据）
-                                if(count >= threshold){
-                                    //TODO 触发数据上报 待开发
-                                }else{
-                                    count ++
-                                }
-                                break;
-                            case customFlag[1]:
-                                //触发数据上报
-                                httpRequest();
-                                break;
+                        //接口返回参数
+                        DATA.backLog = arguments[0];
+                        DATA.timeAxis = new Date().getTime();
+                        DATA.spend = end - start;
+                        DATA.errorFlag = arguments[0].flag == '1' ? 'N' : 'Y';
+                        addData(config.FUN.INTERFACE, DATA);
+                        //处理异常情况 触发数据上报
+                        if (arguments[0].flag != config.FLAG.SUCCESS) {
+                            submitData();
                         }
                         suc.apply(setting.success, arguments);
                     }
@@ -257,21 +304,52 @@ define(['C','js/common/buried', 'zepto'], function (C,bpo,$) {
         }
     };
 
+    /******************************* 启动模块 ******************************/
+
     /*
-     * @module 程序出口
+     * @isExist 检测配置信息
+     * @startUp 启动程序
      * */
-    var col = {};
-    for (var name in control) {
-        if (control[name]) {
-            (main[name])();
-        } else {
-            col[name] = main[name];
+    var isExist = function () {
+        return localStorage.getItem(config.FIELD.SWITCH) ? true : false;
+    };
+    var localExist = function () {
+        return localStorage.getItem(config.FIELD.TRAJECTORY) ?  true : false;
+    };
+
+    var startUp = function () {
+        var duration = localStorage.getItem(config.FIELD.DURATION);
+        if(!isExist()){
+            console.log('------start 配置信息不存在，重新请求配置信息！-----');
+            updateSwitch(config.APP.UPCCODE);
+            return;
         }
-    }
-    return col;
+        config.SWITCHSTATE = JSON.parse(localStorage.getItem(config.FIELD.SWITCH));
+        if (config.SWITCHSTATE.switch == 'Y') {
+            //开始创建数据
+            createContainer();
+            //根据开关配置执行相关模块
+            for (name in config.SWITCHSTATE.config) {
+                if (config.SWITCHSTATE.config[name] == 'Y') {
+                    (main[name] && main[name] instanceof Function) ? main[name]() : '';
+                }
+            }
+            return;
+        }
+        if(!duration || (parseInt(duration) <= new Date().getTime())){
+            console.log('------start 配置信息时长失效，重新请求配置信息！-----');
+            updateSwitch(config.APP.UPCCODE);
+            return;
+        }
+        console.log('系统开关已关闭！');
+    };
+
+    /******************************* 程序入口start ******************************/
+
+    startUp();//根据配置信息执行相关功能模块
+
+    /******************************* 程序入口end ******************************/
 });
 
-/*
- * 问题
- * 1：当埋点种植关闭时，js执行报错（not function）
- * */
+
+
